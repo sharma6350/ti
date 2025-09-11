@@ -1,7 +1,7 @@
 
 'use client';
 
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
@@ -20,36 +20,41 @@ const getSchoolInfo = (): { schoolName: string, schoolId: string } => {
     return { schoolName, schoolId };
 };
 
-export const exportToExcel = (data: (string | null)[][], fileName: string) => {
+export const exportToExcel = async (data: (string | null)[][], fileName: string) => {
   const { schoolName, schoolId } = getSchoolInfo();
-  
-  const headerData = [
-    [schoolName],
-    [`(ID: ${schoolId})`],
-    [] // Empty row for spacing
-  ];
 
-  const ws = XLSX.utils.aoa_to_sheet(headerData);
-  XLSX.utils.sheet_add_aoa(ws, data, { origin: 'A4' }); // Add main data starting from row 4
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Timetable');
 
-  // Merge cells for the main title and subtitle
-  if (data[0] && data[0].length > 0) {
-      const mergeRange = { s: { r: 0, c: 0 }, e: { r: 0, c: data[0].length - 1 } };
-      if (!ws['!merges']) ws['!merges'] = [];
-      ws['!merges'].push(mergeRange);
-      
-      const subTitleMergeRange = { s: { r: 1, c: 0 }, e: { r: 1, c: data[0].length - 1 } };
-      ws['!merges'].push(subTitleMergeRange);
-  }
+  // Add header and merge cells
+  worksheet.addRow([schoolName]);
+  worksheet.mergeCells('A1', `${String.fromCharCode(65 + data[0].length - 1)}1`);
+  worksheet.getCell('A1').alignment = { horizontal: 'center' };
+
+  worksheet.addRow([`(ID: ${schoolId})`]);
+  worksheet.mergeCells('A2', `${String.fromCharCode(65 + data[0].length - 1)}2`);
+  worksheet.getCell('A2').alignment = { horizontal: 'center' };
+
+  worksheet.addRow([]); // Empty row
+
+  // Add main data
+  data.forEach(row => {
+    worksheet.addRow(row);
+  });
 
   // Set column widths
-  const colWidths = data[0].map(() => ({ wch: 15 }));
-  ws['!cols'] = colWidths;
+  worksheet.columns = data[0].map(() => ({ width: 15 }));
 
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Timetable');
-  XLSX.writeFile(wb, `${fileName}.xlsx`);
+  // Write to file
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `${fileName}.xlsx`;
+  link.click();
 };
+
+
 
 export const exportToPdf = (data: ExportCell[][], fileName:string) => {
     const { schoolName, schoolId } = getSchoolInfo();

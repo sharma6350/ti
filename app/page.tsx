@@ -16,9 +16,8 @@ import { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { LifeBuoy, BookOpenCheck, CalendarCog, Users, FileUp, ShieldCheck, Clock, FileSpreadsheet, Edit, Settings, Info, Briefcase, Zap, Palette, Lock } from 'lucide-react';
+import { LifeBuoy, BookOpenCheck, CalendarDays, Users, FileUp, ShieldCheck, Clock, FileSpreadsheet, Edit, Settings, Info, Briefcase, Zap, Palette, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -180,7 +179,7 @@ export default function AuthPage() {
   }
 
   const mainFeatures = [
-    { icon: <CalendarCog className="w-6 h-6 text-primary"/>, title: "Conflict-Free Timetable", description: "Intelligent algorithm ensures no teacher or class is double-booked." },
+    { icon: <CalendarDays className="w-6 h-6 text-primary"/>, title: "Conflict-Free Timetable", description: "Intelligent algorithm ensures no teacher or class is double-booked." },
     { icon: <Users className="w-6 h-6 text-primary"/>, title: "Easy Data Management", description: "Manage teachers, subjects, and classes with a simple, intuitive interface." },
     { icon: <FileUp className="w-6 h-6 text-primary"/>, title: "Simple Data Upload", description: "Quickly upload teacher data using our pre-formatted Excel template." },
     { icon: <Clock className="w-6 h-6 text-primary"/>, title: "Flexible Scheduling", description: "Customize periods, working days, and break times to fit your school's needs." },
@@ -190,7 +189,7 @@ export default function AuthPage() {
 
   const infoCards = [
       { icon: <Zap className="w-8 h-8 text-primary"/>, title: "Fast & Efficient", description: "Our powerful algorithm generates complex timetables in seconds, saving you hours of manual work." },
-      { icon: <Palette className="w-8 h-8 text-primary"/>, title: "Fully Customizable", description: "Adapt every aspect of the schedule, from period timings to working days, to fit your school's unique needs."},
+      { icon: <Palette className="w-8 h-8 text-primary"/>, title: "Fully Customizable", description: "Adapt every aspect of the schedule, from period timings to working days, to fit your school's unique needs.", invalid: true},
       { icon: <Lock className="w-8 h-8 text-primary"/>, title: "Offline & Secure", description: "Works entirely in your browser. Your data stays on your computer, ensuring complete privacy and security."},
       { icon: <Edit className="w-8 h-8 text-primary"/>, title: "Editable Timetable", description: "After generation, you can manually fine-tune and edit the timetable to make perfect adjustments." },
       { icon: <FileSpreadsheet className="w-8 h-8 text-primary"/>, title: "Export Options", description: "Easily export your final timetables to both PDF and Excel formats for printing and sharing." },
@@ -449,5 +448,3 @@ export default function AuthPage() {
     </div>
   );
 }
-
-    
